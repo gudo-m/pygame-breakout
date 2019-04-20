@@ -98,7 +98,7 @@ class Button(GameObject):
                     pressed=c.button_pressed_back_color)[self.state]
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.back_color, self.bounds)
+        aa_round_rect(surface, self.bounds, self.back_color)
         self.text.draw(surface)
 
     def handle_mouse_event(self, type, pos):
