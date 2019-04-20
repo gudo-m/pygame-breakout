@@ -67,7 +67,7 @@ class Ball(GameObject):
         self.color = color
 
     def draw(self, surface):
-        r = pygame.draw.circle(surface, self.color, self.center, self.radius)
+        pygame.draw.circle(surface, self.color, self.center, self.radius)
 
     def update(self):
         super().update()

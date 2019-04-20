@@ -4,7 +4,7 @@ screen_width = 500
 screen_height = 400
 background_image = 'images/background1.jpg'
 
-frame_rate = 40
+frame_rate = 60
 
 row_count = 3
 brick_width = 60
@@ -12,7 +12,7 @@ brick_height = 20
 brick_color = colors.RED1
 offset_y = brick_height + 10
 
-ball_speed = 10
+ball_speed = 20
 ball_radius = 8
 ball_color = colors.INDIANRED1
 
@@ -52,4 +52,4 @@ menu_offset_y = 300
 menu_button_w = 80
 menu_button_h = 50
 
-pause_ball = 3 * frame_rate
+pause_ball = 3
