@@ -80,7 +80,7 @@ class Brick(GameObject):
         self.special_effect = special_effect
 
     def draw(self, surface):
-        pygame.draw.rect(surface, self.color, self.bounds)
+        aa_round_rect(surface, self.bounds, self.color, rad=7)
 
 
 class Button(GameObject):
@@ -98,7 +98,7 @@ class Button(GameObject):
                     pressed=c.button_pressed_back_color)[self.state]
 
     def draw(self, surface):
-        aa_round_rect(surface, self.bounds, self.back_color)
+        aa_round_rect(surface, self.bounds, self.back_color, rad=5)
         self.text.draw(surface)
 
     def handle_mouse_event(self, type, pos):
@@ -159,7 +159,7 @@ class Paddle(GameObject):
         self.moving_right = False
 
     def draw(self, surface):
-        aa_round_rect(surface, self.bounds, self.color)
+        aa_round_rect(surface, self.bounds, self.color, rad=10)
 
     def handle(self, key):
         if key == pygame.K_LEFT:

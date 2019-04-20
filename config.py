@@ -4,22 +4,22 @@ screen_width = 500
 screen_height = 400
 background_image = 'images/background1.jpg'
 
-frame_rate = 60
+frame_rate = 40
 
-row_count = 3
+row_count = 4
 brick_width = 60
 brick_height = 20
-brick_color = colors.RED1
+brick_color = colors.RED2
 offset_y = brick_height + 10
 
-ball_speed = 20
+ball_speed = 8
 ball_radius = 8
-ball_color = colors.INDIANRED1
+ball_color = colors.SKYBLUE
 
 paddle_width = 110
 paddle_height = 50
 paddle_color = colors.DEEPSKYBLUE1
-paddle_speed = 6
+paddle_speed = 12
 
 status_offset_y = 5
 
@@ -35,6 +35,7 @@ font_size = 20
 effect_duration = 20
 
 sounds_effects = dict(
+    wall_hit='sound_effects/wall_hit.wav',
     brick_hit='sound_effects/brick_hit.wav',
     paddle_hit='sound_effects/paddle_hit.wav',
     level_complete='sound_effects/level_complete.wav',
@@ -48,7 +49,7 @@ button_hover_back_color = colors.INDIANRED2
 button_pressed_back_color = colors.INDIANRED3
 
 menu_offset_x = 20
-menu_offset_y = 300
+menu_offset_y = 220
 menu_button_w = 80
 menu_button_h = 50
 
