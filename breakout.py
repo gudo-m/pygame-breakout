@@ -7,6 +7,7 @@ import time
 import pygame
 import string
 import threading
+import bot
 from pygame.rect import Rect
 
 import config as c
@@ -156,8 +157,7 @@ class Breakout(Game):
             env.reset()
 
             while True:
-                env.step(0 if random.randint(0, 150) < 50 else 1)
-
+                env.step(bot.get_action(env.breakout.paddle.bounds.x + c.paddle_width//2, env.breakout.ball.bounds.x, env.breakout.ball.bounds.y + c.ball_radius, env.breakout.ball.speed))
                 if env.breakout.game_over:
                     sys.exit()
 
@@ -427,11 +427,23 @@ class Breakout(Game):
                     sys.exit()
             if env.new_step:
                 self.surface.blit(self.background_image, (0, 0))
+                # if env.action == 0:
+                #     self.paddle.moving_left = not self.paddle.moving_left
+                # elif env.action == 1:
+                #     self.paddle.moving_right = not self.paddle.moving_right
+                # else:
+                #     self.paddle.moving_right = False
+                #     self.paddle.moving_left = False
 
                 if env.action == 0:
-                    self.paddle.moving_left = not self.paddle.moving_left
+                    self.paddle.moving_left = True
+                    self.paddle.moving_right = False
+                elif env.action == 1:
+                    self.paddle.moving_right = True
+                    self.paddle.moving_left = False
                 else:
-                    self.paddle.moving_right = not self.paddle.moving_right
+                    self.paddle.moving_right = False
+                    self.paddle.moving_left = False
 
                 self.update()
                 self.draw()
