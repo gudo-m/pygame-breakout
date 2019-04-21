@@ -17,12 +17,13 @@ from pygame.locals import *
 import sys
 
 
-def get_key():
+def get_key(game=None):
     while 1:
         event = pygame.event.poll()
         if event.type == KEYDOWN:
             return event.key
         elif event.type == pygame.QUIT:
+            game.game_over = True
             pygame.quit()
             sys.exit()
         else:
@@ -61,14 +62,14 @@ def display_box(screen, message, error=None):
     pygame.display.flip()
 
 
-def ask(screen, error=None):
+def ask(screen, error=None, game=None):
     "ask(screen, question) -> answer"
     question = 'Complexity'
     pygame.font.init()
     current_string = []
     display_box(screen, question + ": " + ''.join(current_string), error=error)
     while 1:
-        inkey = get_key()
+        inkey = get_key(game=game)
         if inkey == K_BACKSPACE:
             current_string = current_string[0:-1]
         elif inkey in (pygame.K_RETURN, 271, K_RETURN):

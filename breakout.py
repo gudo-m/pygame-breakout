@@ -6,6 +6,7 @@ import sys
 import time
 import pygame
 import string
+import threading
 from pygame.rect import Rect
 
 import config as c
@@ -47,6 +48,7 @@ class Game:
         """Handle base events"""
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                self.game_over = True
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
@@ -124,13 +126,13 @@ class Breakout(Game):
                 self.objects.remove(b)
 
             try:
-                complexity = int(ask(self.surface))
+                complexity = int(ask(self.surface, game=self))
             except ValueError:
                 complexity = -1
 
             while not 0 <= complexity <= 10:
                 try:
-                    complexity = int(ask(self.surface, error='Write number in range [0; 10]'))
+                    complexity = int(ask(self.surface, game=self, error='Write number in range [0; 10]'))
                 except ValueError:
                     complexity = -1
             k_comp = complexity*0.1 + 1
@@ -138,7 +140,6 @@ class Breakout(Game):
             c.ball_speed = self.ball.speed[1]
 
             self.paddle.speed = (2-k_comp) * c.paddle_speed
-
 
             self.is_game_running = True
             self.start_level = True
@@ -149,7 +150,16 @@ class Breakout(Game):
             self.game_over = True
 
         def on_bot(button):
-            pass
+            pygame.quit()
+            env = BreakoutEnv()
+
+            env.reset()
+
+            while True:
+                env.step(0 if random.randint(0, 150) < 50 else 1)
+
+                if env.breakout.game_over:
+                    sys.exit()
 
         for i, (text, click_handler) in enumerate((('PLAY', on_play), ('BOT', on_bot), ('QUIT', on_quit))):
             b = Button(c.menu_offset_x,
@@ -375,6 +385,90 @@ class Breakout(Game):
         pygame.display.update()
         time.sleep(c.message_duration)
 
+    def game(self, env):
+        for b in self.menu_buttons:
+            self.objects.remove(b)
+
+        try:
+            complexity = int(ask(self.surface, game=self))
+        except ValueError:
+            complexity = -1
+
+        while not 0 <= complexity <= 10:
+            try:
+                complexity = int(ask(self.surface, game=self, error='Write number in range [0; 10]'))
+            except ValueError:
+                complexity = -1
+        k_comp = complexity * 0.1 + 1
+        self.ball.speed = self.ball.speed[0], k_comp * c.ball_speed
+        c.ball_speed = self.ball.speed[1]
+
+        self.paddle.speed = (2 - k_comp) * c.paddle_speed
+
+        self.is_game_running = True
+        self.start_level = True
+
+        while not self.is_game_running:
+            self.surface.blit(self.background_image, (0, 0))
+
+            self.handle_events()
+            self.update()
+            self.draw()
+
+            pygame.display.update()
+            self.clock.tick(self.frame_rate)
+
+        while not self.game_over:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    self.game_over = True
+                    self.is_game_running = False
+                    pygame.quit()
+                    sys.exit()
+            if env.new_step:
+                self.surface.blit(self.background_image, (0, 0))
+
+                if env.action == 0:
+                    self.paddle.moving_left = not self.paddle.moving_left
+                else:
+                    self.paddle.moving_right = not self.paddle.moving_right
+
+                self.update()
+                self.draw()
+
+                pygame.display.update()
+                self.clock.tick(self.frame_rate)
+
+                env.new_step = False
+        pygame.quit()
+        sys.exit()
+
+
+class BreakoutEnv:
+    def __init__(self):
+        self.episodes = 0
+        self.steps = 0
+        self.new_step = False
+        self.action = None
+        self.state = None
+
+        self.breakout = None
+        self.breakout_game = None
+
+    def step(self, action):
+        if self.breakout is None:
+            raise EnvironmentError('You must run reset() before running step()')
+        self.steps += 1
+        self.new_step = True
+        self.action = action
+
+    def reset(self):
+        self.episodes += 1
+        self.steps = 0
+        self.breakout = Breakout()
+
+        self.breakout_game = threading.Thread(target=self.breakout.game, args=(self, ))
+        self.breakout_game.start()
 
 def main():
     Breakout().run()
