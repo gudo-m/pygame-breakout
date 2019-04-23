@@ -9,7 +9,7 @@ def get_action(paddle_x, ball_x, ball_y, ball_speed):
         elif paddle_x > ball_x:
             act = 0
     elif offset <= 25 and ball_y > 330:
-        if abs(ball_speed[0]) > 4:
+        if abs(ball_speed[0]) > 3:
             if ball_speed[0] <= 0:
                 act = 1
             else:

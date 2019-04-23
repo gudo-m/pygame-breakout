@@ -19,15 +19,15 @@ import sys
 
 def get_key(game=None):
     while 1:
-        event = pygame.event.poll()
-        if event.type == KEYDOWN:
-            return event.key
-        elif event.type == pygame.QUIT:
-            game.game_over = True
-            pygame.quit()
-            sys.exit()
-        else:
-            pass
+        for event in game.continue_pygame_loop():
+            if event.type == KEYDOWN:
+                return event.key
+            elif event.type == pygame.QUIT:
+                game.game_over = True
+                pygame.quit()
+                sys.exit()
+            else:
+                pass
 
 
 def display_box(screen, message, error=None):

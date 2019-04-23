@@ -4,7 +4,7 @@ screen_width = 500
 screen_height = 400
 background_image = 'images/background1.jpg'
 
-frame_rate = 40
+frame_rate = 60
 
 row_count = 4
 brick_width = 60
@@ -12,14 +12,14 @@ brick_height = 20
 brick_color = colors.RED2
 offset_y = brick_height + 10
 
-ball_speed = 8
+ball_speed = 6
 ball_radius = 8
 ball_color = colors.SKYBLUE
 
 paddle_width = 110
 paddle_height = 50
 paddle_color = colors.DEEPSKYBLUE1
-paddle_speed = 12
+paddle_speed = 10
 
 status_offset_y = 5
 

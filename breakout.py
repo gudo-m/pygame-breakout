@@ -108,6 +108,7 @@ class Breakout(Game):
         self.create_objects()
         self.points_per_brick = 1
         self.pause = None
+        self.env = None
 
     def add_life(self):
         self.lives += 1
@@ -151,15 +152,22 @@ class Breakout(Game):
             self.game_over = True
 
         def on_bot(button):
-            pygame.quit()
             env = BreakoutEnv()
+            
+            self.env = env
 
             env.reset()
 
             while True:
+                try:
+                    env.events = pygame.event.get()
+                except Exception as e:
+                    print(e)
+                    print('Closed')
                 env.step(bot.get_action(env.breakout.paddle.bounds.x + c.paddle_width//2, env.breakout.ball.bounds.x, env.breakout.ball.bounds.y + c.ball_radius, env.breakout.ball.speed))
                 if env.breakout.game_over:
                     sys.exit()
+                time.sleep(0.0001)
 
         for i, (text, click_handler) in enumerate((('PLAY', on_play), ('BOT', on_bot), ('QUIT', on_quit))):
             b = Button(c.menu_offset_x,
@@ -179,6 +187,11 @@ class Breakout(Game):
         self.create_ball()
         self.create_labels()
         self.create_menu()
+
+    def continue_pygame_loop(self):
+        if self.env is None:
+            return pygame.event.get()
+        return self.env.events
 
     def create_labels(self):
         self.score_label = TextObject(c.score_offset,
@@ -386,6 +399,7 @@ class Breakout(Game):
         time.sleep(c.message_duration)
 
     def game(self, env):
+        self.env = env
         for b in self.menu_buttons:
             self.objects.remove(b)
 
@@ -419,7 +433,7 @@ class Breakout(Game):
             self.clock.tick(self.frame_rate)
 
         while not self.game_over:
-            for event in pygame.event.get():
+            for event in self.continue_pygame_loop():
                 if event.type == pygame.QUIT:
                     self.game_over = True
                     self.is_game_running = False
@@ -466,6 +480,8 @@ class BreakoutEnv:
 
         self.breakout = None
         self.breakout_game = None
+        
+        self.events = []
 
     def step(self, action):
         if self.breakout is None:
